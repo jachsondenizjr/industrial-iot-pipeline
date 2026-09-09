@@ -2,11 +2,10 @@ import sys
 import os
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
-from data_generator.sensor_simulator import (
+from data_generator.sensor_simulator import (  # noqa: E402
     generate_sensor_reading,
     save_batch_to_json,
     EQUIPMENT_FLEET,
-    SENSOR_RANGES,
 )
 
 

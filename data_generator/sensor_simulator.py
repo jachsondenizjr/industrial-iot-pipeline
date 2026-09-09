@@ -7,10 +7,8 @@ Author: Jachson Deniz Junior
 
 import json
 import random
-import time
 import uuid
 from datetime import datetime, timezone
-from typing import Generator
 
 
 EQUIPMENT_FLEET = [

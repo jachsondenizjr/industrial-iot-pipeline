@@ -28,4 +28,4 @@ jobs:
       - name: Lint with flake8
         run: |
           pip install flake8
-          flake8 . --max-line-length=120 --exclude=.git,__pycache__,venv,.venv,*.egg-info,dist,build
+          flake8 .
