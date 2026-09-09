@@ -8,9 +8,8 @@ from pyspark.sql import SparkSession
 from pyspark.sql import functions as F
 from pyspark.sql.types import (
     StructType, StructField, StringType, DoubleType,
-    IntegerType, BooleanType, TimestampType
+    IntegerType, BooleanType
 )
-from datetime import datetime
 import logging
 
 logging.basicConfig(level=logging.INFO)
@@ -96,7 +95,7 @@ def validate_bronze(spark: SparkSession, bronze_path: str) -> dict:
         "null_event_id": df.filter(F.col("event_id").isNull()).count(),
         "null_equipment_id": df.filter(F.col("equipment_id").isNull()).count(),
         "distinct_equipment": df.select("equipment_id").distinct().count(),
-        "anomaly_records": df.filter(F.col("is_anomaly") == True).count(),
+        "anomaly_records": df.filter(F.col("is_anomaly")).count(),
     }
 
     logger.info(f"Bronze validation: {stats}")

@@ -58,10 +58,10 @@ def apply_quality_filters(df: DataFrame) -> DataFrame:
     else:
         df_validated = df_validated.withColumn("_quality_passed", F.lit(True))
 
-    failed = df_validated.filter(F.col("_quality_passed") == False).count()
+    failed = df_validated.filter(~F.col("_quality_passed")).count()
     logger.info(f"Records failing quality checks: {failed}")
 
-    return df_validated.filter(F.col("_quality_passed") == True)
+    return df_validated.filter(F.col("_quality_passed"))
 
 
 def enrich_sensor_data(df: DataFrame) -> DataFrame:
@@ -79,13 +79,15 @@ def enrich_sensor_data(df: DataFrame) -> DataFrame:
         .withColumn("rpm_delta", F.col("rpm") - F.col("rpm_prev")) \
         .withColumn("temp_coolant_prev", F.lag("temp_coolant_c", 1).over(window_eq)) \
         .withColumn("temp_coolant_delta", F.col("temp_coolant_c") - F.col("temp_coolant_prev")) \
-        .withColumn("emissions_severity",
+        .withColumn(
+            "emissions_severity",
             F.when(F.col("nox_ppm") > 400, "CRITICAL")
             .when(F.col("nox_ppm") > 350, "HIGH")
             .when(F.col("nox_ppm") > 200, "MEDIUM")
             .otherwise("NORMAL")
         ) \
-        .withColumn("engine_status",
+        .withColumn(
+            "engine_status",
             F.when(F.col("temp_coolant_c") > 105, "OVERHEATING")
             .when(F.col("pressure_oil_bar") < 2.5, "LOW_OIL_PRESSURE")
             .when(F.col("rpm") > 2000, "HIGH_RPM")
